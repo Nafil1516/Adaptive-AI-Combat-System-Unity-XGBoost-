@@ -396,7 +396,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1583219466}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1260ca04c75852b49b2b28d1e3ddcaf0, type: 3}
   m_Name: 
@@ -419,6 +419,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f0bff90487daef4fb5885937ededdbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  animator: {fileID: 0}
+  walk: 5
+  run: 10
+  roll: 7
+  slide: 9
+  movespeed: 254213878
+  rollstate: -1903714832
+  slidestate: -1288781466
 --- !u!1 &1667204867
 GameObject:
   m_ObjectHideFlags: 0
