@@ -2,7 +2,13 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    public Animator animator;
+
+    public float walk = 5f;
+    public float run = 10f;
+    public float roll = 7f;
+    public float slide = 9f;
     
     void Start()
     {
