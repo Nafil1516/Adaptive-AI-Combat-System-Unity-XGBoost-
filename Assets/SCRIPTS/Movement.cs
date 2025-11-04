@@ -12,8 +12,8 @@ public class Movement : MonoBehaviour
     [Header("Movement Speeds")]
     public float walk = 2f;
     public float run = 10f;
-    public float roll = 7f;
-    public float slide = 9f;
+    public float roll = 5f;
+    public float slide = 5f;
 
     [Header("Animation States")]
     public int movespeed = Animator.StringToHash("speed");
@@ -21,6 +21,16 @@ public class Movement : MonoBehaviour
     public int slidestate = Animator.StringToHash("slide");
 
     private AnimatorStateInfo animationstate;
+
+    bool betweenanimation = false;
+
+    bool isSliding = false;
+
+    bool isRolling = false;
+
+    Vector4 movement;
+
+    private Vector3 rollDirection;
 
 
 
@@ -50,7 +60,11 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        bool betweenanimation = animationstate.IsName("slide") || animationstate.IsName("rolling");
+        animationstate = animator.GetCurrentAnimatorStateInfo(0);
+        betweenanimation = animationstate.IsName("slide") || animationstate.IsName("rolling");
+        isRolling = animationstate.IsName("rolling");
+        isSliding = animationstate.IsName("slide");
+        Debug.Log("Between Animation State: " + betweenanimation);
         if (!betweenanimation)
         {
             float vertical = Input.GetAxis("Vertical");
@@ -59,7 +73,7 @@ public class Movement : MonoBehaviour
             Debug.Log("MOUSE X VALUE:" + mousex);
 
             Vector3 movementLocal = new Vector3(horizontal, 0, vertical).normalized;
-            Vector4 movement = this.transform.TransformDirection(movementLocal) * Time.fixedDeltaTime;
+            movement = this.transform.TransformDirection(movementLocal) * Time.fixedDeltaTime;
 
             Vector3 rotation = new Vector3(0, mousex, 0) * Time.fixedDeltaTime;
             this.transform.Rotate(Vector3.up * mousex * 10f);
@@ -75,11 +89,16 @@ public class Movement : MonoBehaviour
                     animator.SetFloat(movespeed, 1.1f);
                     if (Input.GetKeyDown(KeyCode.Space))
                     {
+                        rollDirection = transform.forward;
                         animator.SetTrigger(rollstate);
-                    }if (Input.GetKeyDown(KeyCode.C))
+                    }
+                    if (Input.GetKeyDown(KeyCode.C))
                     {
+                        rollDirection = transform.forward;
                         animator.SetTrigger(slidestate);
                     }
+
+                    //betweenanimation = false;
                 }
             }
             else
@@ -88,7 +107,19 @@ public class Movement : MonoBehaviour
             }
 
         }
+        if (isRolling && animationstate.normalizedTime < 1f)
+        {
+            Vector3 forward = transform.forward;
+            CC.Move(rollDirection * roll * Time.deltaTime);
+        }
+        if (isSliding && animationstate.normalizedTime < 1f)
+        {
+            Vector3 forward = transform.forward;
+            CC.Move(rollDirection * slide * Time.deltaTime);
+        }
 
     }
+
+
 
 }
