@@ -19,6 +19,7 @@ public class Movement : MonoBehaviour
     public int movespeed = Animator.StringToHash("speed");
     public int rollstate = Animator.StringToHash("Rolling");
     public int slidestate = Animator.StringToHash("slide");
+    public int attackstate = Animator.StringToHash("left_click");
 
     private AnimatorStateInfo animationstate;
 
@@ -101,6 +102,12 @@ public class Movement : MonoBehaviour
                     //betweenanimation = false;
                 }
             }
+            else if(Input.GetMouseButtonDown(0))
+            {
+                animator.SetTrigger(attackstate);
+                //StartCoroutine(ResetAttack());
+                Debug.Log("Left Click Detected - Attack Triggered");
+            }
             else
             {
                 animator.SetFloat(movespeed, 0.1f);
@@ -119,6 +126,12 @@ public class Movement : MonoBehaviour
         }
 
     }
+
+    // IEnumerator  ResetAttack()
+    // {
+    //     yield return new WaitForSeconds(1f);
+    //     animator.ResetTrigger(attackstate);
+    // }
 
 
 
