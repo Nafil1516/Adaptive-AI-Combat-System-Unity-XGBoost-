@@ -20,6 +20,7 @@ public class Movement : MonoBehaviour
     public int rollstate = Animator.StringToHash("Rolling");
     public int slidestate = Animator.StringToHash("slide");
     public int attackstate = Animator.StringToHash("left_click");
+    public int attackstate2 = Animator.StringToHash("right_click");
 
     private AnimatorStateInfo animationstate;
 
@@ -59,7 +60,7 @@ public class Movement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         animationstate = animator.GetCurrentAnimatorStateInfo(0);
         betweenanimation = animationstate.IsName("slide") || animationstate.IsName("rolling");
@@ -98,16 +99,9 @@ public class Movement : MonoBehaviour
                         rollDirection = transform.forward;
                         animator.SetTrigger(slidestate);
                     }
-
-                    //betweenanimation = false;
                 }
             }
-            else if(Input.GetMouseButtonDown(0))
-            {
-                animator.SetTrigger(attackstate);
-                //StartCoroutine(ResetAttack());
-                Debug.Log("Left Click Detected - Attack Triggered");
-            }
+
             else
             {
                 animator.SetFloat(movespeed, 0.1f);
@@ -123,6 +117,16 @@ public class Movement : MonoBehaviour
         {
             Vector3 forward = transform.forward;
             CC.Move(rollDirection * slide * Time.deltaTime);
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            animator.SetTrigger(attackstate);
+            Debug.Log("Left Click Detected - Attack Triggered");
+        }
+        else if (Input.GetMouseButtonDown(1))
+        {
+            animator.SetTrigger(attackstate2);
+            Debug.Log("Right Click Detected - Attack Triggered");
         }
 
     }
