@@ -34,6 +34,8 @@ public class Movement : MonoBehaviour
 
     private Vector3 rollDirection;
 
+    private Vector3 attackForward;
+
 
 
     void Awake()
@@ -120,6 +122,7 @@ public class Movement : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(0))
         {
+            attackForward = transform.forward;
             animator.SetTrigger(attackstate);
             Debug.Log("Left Click Detected - Attack Triggered");
         }
