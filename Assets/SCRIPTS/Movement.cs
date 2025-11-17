@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.Collections;
 
 public class Movement : MonoBehaviour
 {
@@ -36,6 +37,8 @@ public class Movement : MonoBehaviour
 
     private Vector3 attackForward;
 
+    private PlayerAttackLogger logger;
+
 
 
     void Awake()
@@ -49,6 +52,11 @@ public class Movement : MonoBehaviour
         if (CC == null)
         {
             Debug.LogError("CharacterController component not found on " + gameObject.name);
+        }
+         logger = FindFirstObjectByType<PlayerAttackLogger>();
+        if (logger == null)
+        {
+            Debug.LogError("PlayerAttackLogger not found in scene! Attach it to a GameObject.");
         }
     }
 
@@ -122,18 +130,48 @@ public class Movement : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(0))
         {
+            string movementState = "idle";
+            if (animator.GetFloat(movespeed) > 1f)
+            {
+                movementState = "run";
+            }
+            else if (animator.GetFloat(movespeed) > 0.2f)
+            {
+                movementState = "walk";
+            }
             attackForward = transform.forward;
             animator.SetTrigger(attackstate);
-            Debug.Log("Left Click Detected - Attack Triggered");
+            logger.LogAttack("left_click", movementState);
+
+            StartCoroutine(ResetAttackTrigger(attackstate));
+
         }
         else if (Input.GetMouseButtonDown(1))
         {
+            string movementState = "idle";
+            if (animator.GetFloat(movespeed) > 1f)
+            {
+                movementState = "run";
+            }
+            else if (animator.GetFloat(movespeed) > 0.2f)
+            {
+                movementState = "walk";
+            }
+
+            attackForward = transform.forward;
             animator.SetTrigger(attackstate2);
-            Debug.Log("Right Click Detected - Attack Triggered");
+            logger.LogAttack("right_click", movementState);
+
+            StartCoroutine(ResetAttackTrigger(attackstate2));
         }
+        
 
     }
-
+    IEnumerator ResetAttackTrigger(int attackHash)
+    {
+        yield return new WaitForSeconds(0.5f); // match your attack animation length
+        animator.ResetTrigger(attackHash);
+    }
     // IEnumerator  ResetAttack()
     // {
     //     yield return new WaitForSeconds(1f);
