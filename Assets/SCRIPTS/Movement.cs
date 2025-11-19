@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
+using Mono.Cecil.Cil;
 
 public class Movement : MonoBehaviour
 {
@@ -38,6 +39,8 @@ public class Movement : MonoBehaviour
     private Vector3 attackForward;
 
     private PlayerAttackLogger logger;
+
+    public int attackDamage = 10;
 
 
 
