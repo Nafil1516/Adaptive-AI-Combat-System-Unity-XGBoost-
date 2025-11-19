@@ -1,21 +1,50 @@
+using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
     public Animator animator;      // Enemy Animator
     public Transform player;       // Optional, for later distance calculation
 
+    NavMeshAgent NMA;
+
     private string lastPlayerAttack = "none";
+
+
 
     void Awake()
     {
+        animator = GetComponent<Animator>();
         if (animator == null)
-            animator = GetComponent<Animator>();
+        {
+            Debug.LogError("ANIMATOR NOT FOUND");    
+        }
+    
+        NMA = GetComponent<NavMeshAgent>();
+        if (NMA == null)
+        {
+            Debug.LogError("NAV MESH AGENT NOT FOUND");
+        }
     }
 
     void Update()
     {
-        // Optional: idle or move logic can be added later
+        if (!NMA.pathPending)
+        {
+            NMA.SetDestination(player.transform.position);
+        }
+
+        if (NMA.remainingDistance > NMA.stoppingDistance)
+        {
+            NMA.isStopped = false;
+            animator.SetFloat("SPEED", 0.7f);
+        }
+        if (NMA.remainingDistance <= NMA.stoppingDistance)
+        {
+            NMA.isStopped = true;
+            animator.SetFloat("SPEED", 0.3f);
+        }
     }
 
     // Called by PlayerAttackLogger whenever player attacks

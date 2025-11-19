@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
 using Mono.Cecil.Cil;
+using System;
 
 public class Movement : MonoBehaviour
 {
@@ -16,6 +17,10 @@ public class Movement : MonoBehaviour
     public float run = 10f;
     public float roll = 5f;
     public float slide = 5f;
+
+    private float gravity=-9.81f;
+
+    private float verticalcelocity=0;
 
     [Header("Animation States")]
     public int movespeed = Animator.StringToHash("speed");
@@ -75,17 +80,25 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        bool isgrounded=CC.isGrounded;
         animationstate = animator.GetCurrentAnimatorStateInfo(0);
         betweenanimation = animationstate.IsName("slide") || animationstate.IsName("rolling");
         isRolling = animationstate.IsName("rolling");
         isSliding = animationstate.IsName("slide");
         Debug.Log("Between Animation State: " + betweenanimation);
+
+        // if(isgrounded && verticalcelocity<0)
+        // {
+        //     verticalcelocity=-2f;
+        // }
+        // verticalcelocity += gravity * Time.deltaTime;
+        // movement.y=verticalcelocity;
         if (!betweenanimation)
         {
             float vertical = Input.GetAxis("Vertical");
             float horizontal = Input.GetAxis("Horizontal");
             float mousex = Input.GetAxis("Mouse X");
-            Debug.Log("MOUSE X VALUE:" + mousex);
+            //Debug.Log("MOUSE X VALUE:" + mousex);
 
             Vector3 movementLocal = new Vector3(horizontal, 0, vertical).normalized;
             movement = this.transform.TransformDirection(movementLocal) * Time.fixedDeltaTime;
