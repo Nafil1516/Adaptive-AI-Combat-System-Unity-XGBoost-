@@ -44,6 +44,8 @@ public class EnemyAI : MonoBehaviour
         {
             NMA.isStopped = true;
             animator.SetFloat("SPEED", 0.3f);
+            animator.SetTrigger("Attack");
+
         }
     }
 
