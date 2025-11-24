@@ -303,7 +303,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 280511b6e1af01049ad81c3cb4caea91, type: 2}
     - target: {fileID: -4216859302048453862, guid: 82a2914d8f86c62488456950c8330e38, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.82
+      value: -15.08
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 82a2914d8f86c62488456950c8330e38, type: 3}
       propertyPath: m_LocalPosition.y
@@ -455,6 +455,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   animator: {fileID: 0}
   player: {fileID: 811332852}
+  attackRange: 2
+  chaseRange: 10
+  attackCooldown: 2
+  followDelay: 1.5
 --- !u!54 &1424825613
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -806,7 +810,7 @@ Transform:
   m_GameObject: {fileID: 1667204867}
   serializedVersion: 2
   m_LocalRotation: {x: 0.23057884, y: -0.09605648, z: 0.022880057, w: 0.9680305}
-  m_LocalPosition: {x: -2.8899999, y: 2.7200003, z: -10.339592}
+  m_LocalPosition: {x: -14.15, y: 2.7200003, z: -10.339592}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -963,7 +967,7 @@ Transform:
   m_GameObject: {fileID: 1688631469}
   serializedVersion: 2
   m_LocalRotation: {x: 0.23057884, y: -0.09605648, z: 0.022880055, w: 0.9680305}
-  m_LocalPosition: {x: -2.8899999, y: 2.7200003, z: -10.339592}
+  m_LocalPosition: {x: -14.15, y: 2.7200003, z: -10.339592}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

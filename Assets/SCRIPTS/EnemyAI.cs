@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AI;
-
+/*
 public class EnemyAI : MonoBehaviour
 {
     public Animator animator;      // Enemy Animator
@@ -45,7 +45,7 @@ public class EnemyAI : MonoBehaviour
             NMA.isStopped = true;
             animator.SetFloat("SPEED", 0.3f);
             animator.SetTrigger("Attack");
-
+            animator.SetBool("Isattacking", true);
         }
     }
 
@@ -72,6 +72,147 @@ public class EnemyAI : MonoBehaviour
         else
         {
             animator.SetFloat("speed", 0f); // idle
+        }
+    }
+}
+*/
+public class EnemyAI : MonoBehaviour
+{
+    public Animator animator;
+    public Transform player;
+
+    private NavMeshAgent agent;
+
+    private string lastPlayerAttack = "none";
+
+    public float attackRange = 2.0f;
+    public float attackCooldown = 1.5f;
+    private float nextAttackTime = 0f;
+
+    private bool isAttacking = false;
+    private bool canCombo = false;
+
+    void Awake()
+    {
+        animator = GetComponent<Animator>();
+        agent = GetComponent<NavMeshAgent>();
+
+        if (!animator) Debug.LogError("Animator not found!");
+        if (!agent) Debug.LogError("NavMeshAgent not found!");
+    }
+
+    void Update()
+    {
+        float distToPlayer = Vector3.Distance(transform.position, player.position);
+
+        // === PLAYER NOT IN RANGE → CHASE ===
+        if (distToPlayer > attackRange)
+        {
+            StopAttackState();
+            ChasePlayer();
+            return;
+        }
+
+        // === PLAYER IN RANGE → ATTACK ===
+        agent.isStopped = true;
+        animator.SetFloat("SPEED", 0.3f);
+
+        AttackLogic();
+    }
+
+    // --------------------------------------
+    // MOVEMENT
+    // --------------------------------------
+    void ChasePlayer()
+    {
+        agent.isStopped = false;
+        agent.SetDestination(player.position);
+        animator.SetFloat("SPEED", 0.7f);
+    }
+
+    // --------------------------------------
+    // ATTACK SYSTEM (FIXED VERSION)
+    // --------------------------------------
+    void AttackLogic()
+    {
+        // If not currently attacking → try starting a new attack
+        if (!isAttacking)
+        {
+            if (Time.time >= nextAttackTime)
+            {
+                StartNewAttack();
+            }
+            return;
+        }
+
+        // If inside attack state → try extending combo
+        TryComboExtend();
+    }
+
+    void StartNewAttack()
+    {
+        isAttacking = true;
+        canCombo = true;
+
+        animator.SetBool("Isattacking", true);
+        animator.SetTrigger("Attack");
+
+        nextAttackTime = Time.time + attackCooldown;
+    }
+
+    void TryComboExtend()
+    {
+        if (!canCombo) return;
+
+        if (Time.time >= nextAttackTime)
+        {
+            animator.SetTrigger("Attack");
+            nextAttackTime = Time.time + attackCooldown;
+        }
+    }
+
+    // --------------------------------------
+    // EXIT STATE (CALLED BY ANIMATION EVENT)
+    // --------------------------------------
+    public void OnAttackFinish()
+    {
+        isAttacking = false;
+        canCombo = false;
+
+        animator.SetBool("Isattacking", false);
+    }
+
+    // --------------------------------------
+    // STOP ATTACK (WHEN PLAYER MOVES AWAY)
+    // --------------------------------------
+    public void StopAttackState()
+    {
+        if (!isAttacking) return;
+
+        isAttacking = false;
+        canCombo = false;
+
+        animator.SetBool("Isattacking", false);
+    }
+
+    // --------------------------------------
+    // ADAPTIVE BLOCKING SYSTEM
+    // --------------------------------------
+    public void OnPlayerAttack(string attackType)
+    {
+        lastPlayerAttack = attackType;
+        AdaptToPlayer();
+    }
+
+    void AdaptToPlayer()
+    {
+        if (lastPlayerAttack == "left_click")
+        {
+            animator.SetTrigger("block_left");
+        }
+        else if (lastPlayerAttack == "right_click")
+        {
+            animator.SetTrigger("block_right");
         }
     }
 }
