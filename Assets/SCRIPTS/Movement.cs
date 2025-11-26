@@ -18,9 +18,9 @@ public class Movement : MonoBehaviour
     public float roll = 5f;
     public float slide = 5f;
 
-    private float gravity=-9.81f;
+    private float gravity = -9.81f;
 
-    private float verticalcelocity=0;
+    private float verticalcelocity = 0;
 
     [Header("Animation States")]
     public int movespeed = Animator.StringToHash("speed");
@@ -61,7 +61,7 @@ public class Movement : MonoBehaviour
         {
             Debug.LogError("CharacterController component not found on " + gameObject.name);
         }
-         logger = FindFirstObjectByType<PlayerAttackLogger>();
+        logger = FindFirstObjectByType<PlayerAttackLogger>();
         if (logger == null)
         {
             Debug.LogError("PlayerAttackLogger not found in scene! Attach it to a GameObject.");
@@ -80,12 +80,12 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool isgrounded=CC.isGrounded;
+        bool isgrounded = CC.isGrounded;
         animationstate = animator.GetCurrentAnimatorStateInfo(0);
         betweenanimation = animationstate.IsName("slide") || animationstate.IsName("rolling");
         isRolling = animationstate.IsName("rolling");
         isSliding = animationstate.IsName("slide");
-        Debug.Log("Between Animation State: " + betweenanimation);
+        //Debug.Log("Between Animation State: " + betweenanimation);
 
         // if(isgrounded && verticalcelocity<0)
         // {
@@ -157,7 +157,7 @@ public class Movement : MonoBehaviour
             }
             attackForward = transform.forward;
             animator.SetTrigger(attackstate);
-            logger.LogAttack("left_click", movementState);
+            //logger.LogAttack("left_click", movementState);
 
             StartCoroutine(ResetAttackTrigger(attackstate));
 
@@ -180,11 +180,11 @@ public class Movement : MonoBehaviour
 
             StartCoroutine(ResetAttackTrigger(attackstate2));
         }
-        if(!isRolling && !isSliding && Input.GetKeyDown(KeyCode.Q))
+        if (!isRolling && !isSliding && Input.GetKeyDown(KeyCode.Q))
         {
             animator.SetTrigger("Block");
         }
-        
+
 
     }
     IEnumerator ResetAttackTrigger(int attackHash)
@@ -197,6 +197,15 @@ public class Movement : MonoBehaviour
     //     yield return new WaitForSeconds(1f);
     //     animator.ResetTrigger(attackstate);
     // }
+
+    public void TakeDamage(int damage)
+    {
+        if(!animationstate.IsName("gethit3"))
+        {
+            animator.SetTrigger("GOTHIT");    
+        }
+        Debug.Log("Player got hit for " + damage);
+    }
 
 
 
