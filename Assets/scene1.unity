@@ -453,7 +453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9605467834b443e4d8dc3d66a7e71bcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
-  animator: {fileID: 0}
+  animator: {fileID: 1424825614}
   player: {fileID: 811332852}
   attackRange: 2
   chaseRange: 10
@@ -486,6 +486,11 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 90
   m_CollisionDetection: 0
+--- !u!95 &1424825614 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 3180073626204433794, guid: af8d0a12de7b28b41b708ac01461d7f8, type: 3}
+  m_PrefabInstance: {fileID: 2082520891}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1526394726
 GameObject:
   m_ObjectHideFlags: 0

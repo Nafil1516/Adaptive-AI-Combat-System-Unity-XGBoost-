@@ -180,6 +180,10 @@ public class Movement : MonoBehaviour
 
             StartCoroutine(ResetAttackTrigger(attackstate2));
         }
+        if(!isRolling && !isSliding && Input.GetKeyDown(KeyCode.Q))
+        {
+            animator.SetTrigger("Block");
+        }
         
 
     }
