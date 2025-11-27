@@ -76,6 +76,8 @@ public class EnemyAI : MonoBehaviour
     }
 }
 */
+
+/*
 public class EnemyAI : MonoBehaviour
 {
     public Animator animator;
@@ -213,6 +215,152 @@ public class EnemyAI : MonoBehaviour
         else if (lastPlayerAttack == "right_click")
         {
             animator.SetTrigger("block_right");
+        }
+    }
+}
+*/
+public class EnemyAI : MonoBehaviour
+{
+    public Animator animator;
+    public Transform player;
+
+    private NavMeshAgent agent;
+
+    private Animator playeraniamtor;
+
+    private string lastPlayerAttack = "none";
+
+    public float attackRange = 2.0f;
+    public float attackCooldown = 1.5f;
+    private float nextAttackTime = 0f;
+
+    private bool isAttacking = false;
+    private bool canCombo = false;
+
+    void Awake()
+    {
+        animator = GetComponent<Animator>();
+        agent = GetComponent<NavMeshAgent>();
+        playeraniamtor = player.GetComponent<Animator>();
+        
+
+        if (!animator) Debug.LogError("Animator not found!");
+        if (!agent) Debug.LogError("NavMeshAgent not found!");
+    }
+
+    void Update()
+    {
+        float distToPlayer = Vector3.Distance(transform.position, player.position);
+
+        // === PLAYER NOT IN RANGE → CHASE ===
+        if (distToPlayer > attackRange)
+        {
+            StopAttackState();
+            ChasePlayer();
+            return;
+        }
+
+        // === PLAYER IN RANGE → ATTACK ===
+        agent.isStopped = true;
+        animator.SetFloat("SPEED", 0.3f);
+
+        AttackLogic();
+    }
+
+    // --------------------------------------
+    // MOVEMENT
+    // --------------------------------------
+    void ChasePlayer()
+    {
+        agent.isStopped = false;
+        agent.SetDestination(player.position);
+        animator.SetFloat("SPEED", 0.7f);
+    }
+
+    // --------------------------------------
+    // ATTACK SYSTEM (FIXED VERSION)
+    // --------------------------------------
+    void AttackLogic()
+    {
+        // If not currently attacking → try starting a new attack
+        if (!isAttacking)
+        {
+            if (Time.time >= nextAttackTime)
+            {
+                StartNewAttack();
+            }
+            return;
+        }
+
+        // If inside attack state → try extending combo
+        TryComboExtend();
+    }
+
+    void StartNewAttack()
+    {
+        isAttacking = true;
+        canCombo = true;
+
+        animator.SetBool("Isattacking", true);
+        animator.SetTrigger("Attack");
+
+        nextAttackTime = Time.time + attackCooldown;
+    }
+
+    void TryComboExtend()
+    {
+        if (!canCombo) return;
+
+        if (Time.time >= nextAttackTime)
+        {
+            animator.SetTrigger("Attack");
+            nextAttackTime = Time.time + attackCooldown;
+        }
+    }
+
+    // --------------------------------------
+    // EXIT STATE (CALLED BY ANIMATION EVENT)
+    // --------------------------------------
+    public void OnAttackFinish()
+    {
+        isAttacking = false;
+        canCombo = false;
+
+        animator.SetBool("Isattacking", false);
+    }
+
+    // --------------------------------------
+    // STOP ATTACK (WHEN PLAYER MOVES AWAY)
+    // --------------------------------------
+    public void StopAttackState()
+    {
+        if (!isAttacking) return;
+
+        isAttacking = false;
+        canCombo = false;
+
+        animator.SetBool("Isattacking", false);
+    }
+
+    // --------------------------------------
+    // ADAPTIVE BLOCKING SYSTEM
+    // --------------------------------------
+    public void OnPlayerAttack(string attackType)
+    {
+        lastPlayerAttack = attackType;
+        AdaptToPlayer();
+    }
+
+    void AdaptToPlayer()
+    {
+        
+        if (playeraniamtor.GetCurrentAnimatorStateInfo(0).IsName("light attack 1"))
+        {
+           animator.SetTrigger("EnemyBlock");
+        }
+        else if (playeraniamtor.GetCurrentAnimatorStateInfo(0).IsName("Right_Attack"))
+        {
+            lastPlayerAttack = "right_click";
         }
     }
 }
