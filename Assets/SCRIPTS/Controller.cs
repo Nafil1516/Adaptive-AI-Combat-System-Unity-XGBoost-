@@ -7,6 +7,7 @@ public class Controller : MonoBehaviour
     
     void Start()
     {
+        
         bananaAnimator = this.GetComponent<Animator>();
         if (bananaAnimator == null)
         {
@@ -17,8 +18,12 @@ public class Controller : MonoBehaviour
             Debug.Log("Animator component successfully found.");
         }
     }
+    void Awake()
+    {
+        
+    }
 
-    
+
     void FixedUpdate()
     {
         animationstate = bananaAnimator.GetCurrentAnimatorStateInfo(0);
