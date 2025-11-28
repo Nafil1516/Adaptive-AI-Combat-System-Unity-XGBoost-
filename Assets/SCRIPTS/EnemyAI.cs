@@ -388,7 +388,7 @@ public class EnemyAI : MonoBehaviour
     {
         animator.SetTrigger("Die");
         animator.SetBool("IsDead", true);
-        agent.isStopped = false;
+        agent.isStopped = true;
 
         // Disable enemy components here
 
