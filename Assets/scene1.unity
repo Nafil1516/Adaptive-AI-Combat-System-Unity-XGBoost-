@@ -195,13 +195,14 @@ GameObject:
   m_Component:
   - component: {fileID: 549719828}
   - component: {fileID: 549719829}
+  - component: {fileID: 549719830}
   m_Layer: 0
   m_Name: HITBOX
   m_TagString: PlayerHitbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &549719828
 Transform:
   m_ObjectHideFlags: 0
@@ -232,12 +233,26 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &549719830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 549719827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21d21dc0a486efa45ae0c30073782bcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  hitbox: {fileID: 549719827}
+  damage: 10
 --- !u!1 &639112132
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,6 +503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   hitbox: {fileID: 549719827}
+  damage: 10
 --- !u!1 &1001663657
 GameObject:
   m_ObjectHideFlags: 0
@@ -570,6 +586,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1176757054}
   - component: {fileID: 1176757055}
+  - component: {fileID: 1176757056}
   m_Layer: 0
   m_Name: HURTBOX
   m_TagString: EnemyHurtbox
@@ -613,6 +630,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1176757056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176757053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ab39603d41766d4fa4924c708dbd2a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  sword: {fileID: 1867357154}
 --- !u!1001 &1268557755
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -790,6 +820,7 @@ MonoBehaviour:
   player: {fileID: 811332852}
   attackRange: 2
   attackCooldown: 2
+  health: 100
 --- !u!54 &1424825613
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -911,7 +942,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9026631880981124986efd2a20e96a1d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 549719828}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9026631880981124986efd2a20e96a1d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1867357157}
   m_SourcePrefab: {fileID: 100100000, guid: 9026631880981124986efd2a20e96a1d, type: 3}
 --- !u!4 &1461950338 stripped
 Transform:
@@ -1410,6 +1444,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8306079988637490500, guid: af8d0a12de7b28b41b708ac01461d7f8, type: 3}
   m_PrefabInstance: {fileID: 2082520891}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1867357154 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 9026631880981124986efd2a20e96a1d, type: 3}
+  m_PrefabInstance: {fileID: 1461950337}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1867357157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1867357154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21d21dc0a486efa45ae0c30073782bcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  hitbox: {fileID: 549719827}
+  damage: 5
 --- !u!1 &1955800681
 GameObject:
   m_ObjectHideFlags: 0

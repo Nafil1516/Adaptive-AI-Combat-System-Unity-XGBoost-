@@ -237,12 +237,14 @@ public class EnemyAI : MonoBehaviour
     private bool isAttacking = false;
     private bool canCombo = false;
 
+    public int health = 100;
+
     void Awake()
     {
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         playeraniamtor = player.GetComponent<Animator>();
-        
+
 
         if (!animator) Debug.LogError("Animator not found!");
         if (!agent) Debug.LogError("NavMeshAgent not found!");
@@ -353,14 +355,38 @@ public class EnemyAI : MonoBehaviour
 
     void AdaptToPlayer()
     {
-        
+
         if (playeraniamtor.GetCurrentAnimatorStateInfo(0).IsName("light attack 1"))
         {
-           animator.SetTrigger("EnemyBlock");
+            animator.SetTrigger("EnemyBlock");
         }
         else if (playeraniamtor.GetCurrentAnimatorStateInfo(0).IsName("Right_Attack"))
         {
             lastPlayerAttack = "right_click";
         }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        Debug.Log("Enemy took damage: " + damage);
+
+        if (animator != null)
+        {
+            Debug.Log("Firing PlayerHit trigger!");
+            animator.SetTrigger("PlayerHit");
+        }
+
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+
+    private void Die()
+    {
+        animator.SetTrigger("Die");
+        // Disable enemy components here
     }
 }
