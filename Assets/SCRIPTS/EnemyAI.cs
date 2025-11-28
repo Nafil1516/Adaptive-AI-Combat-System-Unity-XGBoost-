@@ -373,7 +373,7 @@ public class EnemyAI : MonoBehaviour
 
         if (animator != null)
         {
-            Debug.Log("Firing PlayerHit trigger!");
+            Debug.Log("Firing PlayerH it trigger!");
             animator.SetTrigger("PlayerHit");
         }
 
@@ -387,6 +387,11 @@ public class EnemyAI : MonoBehaviour
     private void Die()
     {
         animator.SetTrigger("Die");
+        animator.SetBool("IsDead", true);
+        agent.isStopped = true;
         // Disable enemy components here
+
+
+
     }
 }
