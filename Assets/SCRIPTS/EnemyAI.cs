@@ -219,6 +219,8 @@ public class EnemyAI : MonoBehaviour
     }
 }
 */
+
+/*
 public class EnemyAI : MonoBehaviour
 {
     public Animator animator;
@@ -254,7 +256,6 @@ public class EnemyAI : MonoBehaviour
     {
         float distToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // === PLAYER NOT IN RANGE → CHASE ===
         if (distToPlayer > attackRange)
         {
             StopAttackState();
@@ -262,16 +263,12 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        // === PLAYER IN RANGE → ATTACK ===
         agent.isStopped = true;
         animator.SetFloat("SPEED", 0.3f);
 
         AttackLogic();
     }
 
-    // --------------------------------------
-    // MOVEMENT
-    // --------------------------------------
     void ChasePlayer()
     {
         agent.isStopped = false;
@@ -279,12 +276,8 @@ public class EnemyAI : MonoBehaviour
         animator.SetFloat("SPEED", 0.7f);
     }
 
-    // --------------------------------------
-    // ATTACK SYSTEM (FIXED VERSION)
-    // --------------------------------------
-    void AttackLogic()
+      void AttackLogic()
     {
-        // If not currently attacking → try starting a new attack
         if (!isAttacking)
         {
             if (Time.time >= nextAttackTime)
@@ -293,13 +286,12 @@ public class EnemyAI : MonoBehaviour
             }
             return;
         }
-
-        // If inside attack state → try extending combo
         TryComboExtend();
     }
 
     void StartNewAttack()
     {
+        agent.isStopped = true;
         isAttacking = true;
         canCombo = true;
 
@@ -320,39 +312,31 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // --------------------------------------
-    // EXIT STATE (CALLED BY ANIMATION EVENT)
-    // --------------------------------------
-    public void OnAttackFinish()
+       public void OnAttackFinish()
     {
         isAttacking = false;
         canCombo = false;
+        agent.isStopped = false;
 
         animator.SetBool("Isattacking", false);
     }
 
-    // --------------------------------------
-    // STOP ATTACK (WHEN PLAYER MOVES AWAY)
-    // --------------------------------------
     public void StopAttackState()
     {
         if (!isAttacking) return;
 
         isAttacking = false;
         canCombo = false;
+        agent.isStopped = false;
 
         animator.SetBool("Isattacking", false);
     }
 
-    // --------------------------------------
-    // ADAPTIVE BLOCKING SYSTEM
-    // --------------------------------------
     public void OnPlayerAttack(string attackType)
     {
         lastPlayerAttack = attackType;
         AdaptToPlayer();
     }
-
     void AdaptToPlayer()
     {
 
@@ -382,17 +366,227 @@ public class EnemyAI : MonoBehaviour
             Die();
         }
     }
-
-
     private void Die()
     {
         animator.SetTrigger("Die");
         animator.SetBool("IsDead", true);
         agent.isStopped = true;
-
-        // Disable enemy components here
-
-
-
     }
+}
+*/
+
+public class EnemyAI : MonoBehaviour
+{
+    [Header("Components")]
+    public Animator animator;
+    public Transform player;
+    private NavMeshAgent agent;
+
+    private string lastPlayerAttack = "none";
+
+    private Animator playeraniamtor;
+
+    private Movement playerMovement;
+
+    public bool playerblockedtheattack = false;
+
+
+    [Header("Combat Settings")]
+    public float attackRange = 2.0f;
+    public float attackCooldown = 1.5f;
+    public float attackWindUp = 0.4f;
+    private float nextAttackTime = 0f;
+
+    private bool isAttacking = false;
+    private bool waitingForExit = false;
+
+    [Header("Enemy Stats")]
+    public int health = 100;
+
+    private bool isStunned = false;
+
+
+    void Awake()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        playeraniamtor = player.GetComponent<Animator>();
+        playerMovement = player.GetComponent<Movement>();
+        if (!animator) animator = GetComponent<Animator>();
+        if (!agent) Debug.LogError("NavMeshAgent not found!");
+    }
+
+    void Update()
+    {
+        if (animator.GetBool("IsDead")) return;
+
+        float dist = Vector3.Distance(transform.position, player.position);
+
+        if (dist > attackRange)
+        {
+            ExitAttackState();
+            ChasePlayer();
+            return;
+        }
+        if (playerblockedtheattack)
+        {
+            animator.SetBool("isattacking", false);
+        }
+
+        agent.isStopped = true;
+        animator.SetFloat("SPEED", 0.25f);
+
+        HandleAttackLogic();
+    }
+    public void OnPlayerAttack(string attackType)
+    {
+        lastPlayerAttack = attackType;
+        AdaptToPlayer();
+    }
+
+    void AdaptToPlayer()
+    {
+
+        if (playeraniamtor.GetCurrentAnimatorStateInfo(0).IsName("light attack 1"))
+        {
+            animator.SetTrigger("EnemyBlock");
+        }
+        else if (playeraniamtor.GetCurrentAnimatorStateInfo(0).IsName("Right_Attack"))
+        {
+            lastPlayerAttack = "right_click";
+        }
+    }
+
+
+    void ChasePlayer()
+    {
+        if (!agent.isActiveAndEnabled) return;
+
+        agent.isStopped = false;
+        agent.SetDestination(player.position);
+        animator.SetFloat("SPEED", 0.7f);
+    }
+
+
+    void HandleAttackLogic()
+    {
+        if (!isAttacking)
+        {
+            if (Time.time >= nextAttackTime)
+            {
+                StartAttack();
+            }
+            return;
+        }
+
+
+        if (waitingForExit) return;
+    }
+
+    void StartAttack()
+    {
+        isAttacking = true;
+        waitingForExit = true;
+
+        animator.SetBool("Isattacking", true);
+        animator.SetTrigger("Attack");
+
+        agent.isStopped = true;
+
+        // next time AI is allowed to re-attack
+        nextAttackTime = Time.time + attackCooldown;
+
+        // allow animation to exit after a short delay
+        Invoke(nameof(AllowExit), attackWindUp);
+    }
+
+    void AllowExit()
+    {
+        waitingForExit = false;
+    }
+
+    // This will be called by animation event (or at end of attack)
+    public void OnAttackFinish()
+    {
+        ExitAttackState();
+    }
+
+    // EnemyAI.cs (ExitAttackState)
+    void ExitAttackState()
+    {
+        if (!isAttacking) return;
+
+        isAttacking = false;
+        waitingForExit = false;
+        animator.SetBool("Isattacking", false);
+        if (agent.isActiveAndEnabled)
+            agent.isStopped = false;
+    }
+
+
+    public void TakeDamage(int damage, bool playerBlocked = false)
+    {
+        if (health <= 0) return; 
+        if (isStunned) return;   
+
+       
+        if (playerBlocked)
+        {
+            
+            animator.SetTrigger("Blocked");
+
+           
+            isStunned = true;
+
+          
+            agent.isStopped = true;
+            isAttacking = false;
+            waitingForExit = false;
+
+            Debug.Log("Enemy is stunned by player block!");
+
+           
+            float stunDuration = 1.0f; 
+            Invoke(nameof(ExitStun), stunDuration);
+            return;
+        }
+        animator.SetBool("isattacking", false);
+        Debug.Log("Enemy took damage: " + damage);
+        animator.SetTrigger("PlayerHit");
+        health -= damage;
+
+        Debug.Log($"Enemy took {damage} damage! Remaining health: {health}");
+       
+        if (isAttacking)
+        {
+            ExitAttackState();
+        }
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+    void Die()
+    {
+        animator.SetBool("IsDead", true);
+        animator.SetTrigger("Die");
+        agent.isStopped = true;
+    }
+
+    void ExitStun()
+    {
+        isStunned = false;
+        agent.isStopped = false;
+        float dist = Vector3.Distance(transform.position, player.position);
+        if (dist <= attackRange)
+        {
+            Debug.Log("Enemy resumes attack after stun.");
+            StartAttack();
+        }
+        else
+        {
+            Debug.Log("Enemy chases player after stun.");
+            ChasePlayer();
+        }
+    }
+
 }

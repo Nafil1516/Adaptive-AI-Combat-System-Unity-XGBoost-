@@ -6,9 +6,11 @@ public class EnemyHurtBox : MonoBehaviour
 
     public GameObject sword;
 
+
     private void Awake()
     {
         enemy = GetComponentInParent<EnemyAI>();
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -28,10 +30,10 @@ public class EnemyHurtBox : MonoBehaviour
             return;
         }
 
-        if (hit.CanDamage())
-        {
-            enemy.TakeDamage(hit.damage);
-        }
+        enemy.playerblockedtheattack = true;
+        Debug.Log("ENEMY GOT HIT BY THE PLAYER");
+        enemy.TakeDamage(hit.damage);
+
     }
 
 
