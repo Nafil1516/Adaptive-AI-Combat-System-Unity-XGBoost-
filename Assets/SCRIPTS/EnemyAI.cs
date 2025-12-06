@@ -565,6 +565,16 @@ public class EnemyAI : MonoBehaviour
             Die();
         }
     }
+
+    public void disableattack()
+    {
+        isAttacking = false;
+        waitingForExit = false;
+        
+        animator.SetBool("Isattacking", false);
+        if (agent.isActiveAndEnabled)
+            agent.isStopped = false;
+    }
     void Die()
     {
         animator.SetBool("IsDead", true);

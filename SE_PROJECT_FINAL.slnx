@@ -1,4 +1,9 @@
 ﻿<Solution>
+  <Project Path="Unity.Sentis.csproj" />
+  <Project Path="Unity.Sentis.iOSBLAS.csproj" />
+  <Project Path="Unity.Sentis.ONNX.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Unity.Sentis.MacBLAS.csproj" />
+  <Project Path="Unity.Sentis.Editor.csproj" />
 </Solution>
