@@ -18,10 +18,8 @@ public class Controller : MonoBehaviour
             Debug.Log("Animator component successfully found.");
         }
     }
-    void Awake()
-    {
-        
-    }
+    
+    
 
 
     void FixedUpdate()

@@ -5,4 +5,22 @@
 [Bb]uilds/
 [Ll]ogs/
 [Mm]emoryCaptures/
-Assets/AssetStoreTools*
+UserSettings/
+.derp/
+sysinfo.txt
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity Cache
+Packages/PackageCache/
